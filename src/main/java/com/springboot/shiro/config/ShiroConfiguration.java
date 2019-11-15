@@ -41,17 +41,22 @@ public class ShiroConfiguration {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         //必须设置SecurityManager
         shiroFilterFactoryBean.setSecurityManager(securityManager);
+        //如果不设置默认会自动寻找web工程根目录下的"/login.jsp"页面;
+        //shiroFilterFactoryBean.setLoginUrl("/login");
+        //登录成功后跳转的页面;
+       shiroFilterFactoryBean.setSuccessUrl("/index");
+        //这里设置403并不会起作用，参考http://www.jianshu.com/p/e03f5b54838c
+      shiroFilterFactoryBean.setUnauthorizedUrl("/403");
 
-
+/*
         //验证码过滤器
         Map<String, Filter> filtersMap = shiroFilterFactoryBean.getFilters();
           KaptchaFilter kaptchaFilter = new KaptchaFilter();
           filtersMap.put("kaptchaFilter", kaptchaFilter);
         shiroFilterFactoryBean.setFilters(filtersMap);
+*/
 
-
-
-        // 拦截器.
+       // 拦截器.
         //rest：比如/admins/user/**=rest[user],根据请求的方法，相当于/admins/user/**=perms[user：method] ,其中method为post，get，delete等。
         //port：比如/admins/user/**=port[8081],当请求的url的端口不是8081是跳转到schemal：//serverName：8081?queryString,其中schmal是协议http或https等，serverName是你访问的host,8081是url配置里port的端口，queryString是你访问的url里的？后面的参数。
         //perms：比如/admins/user/**=perms[user：add：*],perms参数可以写多个，多个时必须加上引号，并且参数之间用逗号分割，比如/admins/user/**=perms["user：add：*,user：modify：*"]，当有多个参数时必须每个参数都通过才通过，想当于isPermitedAll()方法。
@@ -69,21 +74,19 @@ public class ShiroConfiguration {
 
         //开放静态资源;
         //网站图标
-        filterChainDefinitionMap.put("/favicon.ico", "anon");
+    //   filterChainDefinitionMap.put("/favicon.ico", "anon");
         //配置static 文件下的资源能被访问.这是个例子
-        filterChainDefinitionMap.put("/kaptcha.jpg", "anon");
+   //   filterChainDefinitionMap.put("/kaptcha.jpg", "anon");
+        filterChainDefinitionMap.put("/static/**", "anon");
         filterChainDefinitionMap.put("/login", "anon");
+
+       // filterChainDefinitionMap.put("/logout", "logout");
         //filterChainDefinitionMap.put("/**", "authc");
         //authc表示需要验证身份才能访问，还有一些比如anon表示不需要验证身份就能访问等。
-        filterChainDefinitionMap.put("/index", "user");
-        filterChainDefinitionMap.put("/", "user");
+       filterChainDefinitionMap.put("/index", "user");
+       filterChainDefinitionMap.put("/", "user");
 
-        //如果不设置默认会自动寻找web工程根目录下的"/login.jsp"页面;
-        //shiroFilterFactoryBean.setLoginUrl("/login");
-        //登录成功后跳转的页面;
-        shiroFilterFactoryBean.setSuccessUrl("/index");
-        //这里设置403并不会起作用，参考http://www.jianshu.com/p/e03f5b54838c
-         shiroFilterFactoryBean.setUnauthorizedUrl("/403");
+
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
     }

@@ -1,9 +1,16 @@
 package com.springboot.shiro.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.hibernate.cache.spi.access.UnknownAccessTypeException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,29 +32,28 @@ public class HomeController {
 
 
 
-    @RequestMapping("/login")
-    public String login(HttpServletRequest request, Map<String,Object> map) {
+    @GetMapping("/login")
+    public String login(){
+        return "login";
+    }
+
+
+
+    @PostMapping("/login")
+    public ResponseEntity login(HttpServletRequest request, String username,String password,boolean rememberMe,String kaptcha) {
         log.info("验证登录请求!");
 
-        // 登录失败从request中获取shiro处理的异常信息。
-        // shiroLoginFailure:就是shiro异常类的全类名.
-        Object exception = request.getAttribute("shiroLoginFailure");
-        String msg = "";
-        if (exception != null) {
-            if (UnknownAccessTypeException.class.isInstance(exception)){
-                log.info("账户不存在");
-                msg = "账户不存在或密码不正确";
-            }else if (IncorrectCredentialsException.class.isInstance(exception)){
-                log.info("密码不正确");
-                msg = "密码不正确";
-            }else{
-                log.info("其他异常");
-                msg = "其他异常";
-            }
+        UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+        //获取当前的Subject
+        Subject currentUser = SecurityUtils.getSubject();
+
+        try {
+            currentUser.login(token);
+            return ResponseEntity.ok("登录成功");
+        } catch (AuthenticationException e) {
+            token.clear();
+            return ResponseEntity.ok("登录失败");
         }
-        request.setAttribute("msg", msg);
-        map.put("msg",msg);
-        return "login";
     }
 
 

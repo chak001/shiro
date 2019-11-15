@@ -49,7 +49,7 @@ public class MyShiroRealm extends AuthorizingRealm {
                 username,
                 userInfo.getPassword(),
                 getName());
-        //设置盐值
+        //设置盐值salt=username+salt
         authenticationInfo.setCredentialsSalt(ByteSource.Util.bytes(userInfo.getCredentialsSalt()));
         return authenticationInfo;
     }
