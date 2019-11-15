@@ -1,0 +1,27 @@
+# Server settings
+server:
+  port: 8089
+
+# SPRING PROFILES
+spring:
+  datasource:
+    type:  com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://172.16.135.32:3306/og_plus?serverTimezone=Asia/Shanghai&useSSL=false
+    username: root
+    password: 12345678
+  application:
+    name: shiro-admin
+  thymeleaf:
+    mode: HTML5
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+    cache: false
+
+# MyBatis
+mybatis:
+  type-aliases-package: com.springboot.shiro
+  mapper-locations: classpath:/mapper/*
+  configuration:
+    mapUnderscoreToCamelCase: true
