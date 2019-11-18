@@ -5,14 +5,13 @@ import com.springboot.shiro.Entity.SysRole;
 import com.springboot.shiro.Entity.UserInfo;
 import com.springboot.shiro.service.UserInfoService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,20 +36,27 @@ public class MyShiroRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         log.info("开始验证身份");
         //获取用户名.默认是和login.html中的username一样的;
-        String username = (String) token.getPrincipal();
+       // Object username = token.getPrincipal();
+        UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) token;
+        String username = usernamePasswordToken.getUsername();
         //通过username从数据库中查找 ManagerInfo对象
         //实际项目中，这里可以根据实际情况做缓存，如果不做，Shiro自己也是有时间间隔机制，2分钟内不会重复执行该方法
-        UserInfo userInfo=userInfoService.findByUsername(username);
+       // UserInfo userInfo=userInfoService.findByUsername(username);
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUsername("admin");
+        userInfo.setPassword("admin");
         if (userInfo == null) {
+
             return null;
         }
+        String name = getName();
         //交给AuthenticatingRealm使用CredentialsMatcher进行密码匹配，如果觉得人家的不好可以自定义实现
-        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
+        SimpleAuthenticationInfo  authenticationInfo = new SimpleAuthenticationInfo(
                 username,
                 userInfo.getPassword(),
                 getName());
         //设置盐值salt=username+salt
-        authenticationInfo.setCredentialsSalt(ByteSource.Util.bytes(userInfo.getCredentialsSalt()));
+       // authenticationInfo.setCredentialsSalt(ByteSource.Util.bytes(userInfo.getCredentialsSalt()));
         return authenticationInfo;
     }
 

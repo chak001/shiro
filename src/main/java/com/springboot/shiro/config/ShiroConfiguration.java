@@ -42,7 +42,7 @@ public class ShiroConfiguration {
         //必须设置SecurityManager
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         //如果不设置默认会自动寻找web工程根目录下的"/login.jsp"页面;
-       // shiroFilterFactoryBean.setLoginUrl("/toLogin");
+        //shiroFilterFactoryBean.setLoginUrl("/toLogin");
         //登录成功后跳转的页面;
        shiroFilterFactoryBean.setSuccessUrl("/index");
         //这里设置403并不会起作用，参考http://www.jianshu.com/p/e03f5b54838c
@@ -113,12 +113,13 @@ public class ShiroConfiguration {
     @Bean(name="myShiroRealm")
     public MyShiroRealm myShiroRealm() {
         MyShiroRealm myShiroRealm = new MyShiroRealm();
-        myShiroRealm.setCredentialsMatcher(hashedCredentialsMatcher()); //设置解密规则
+        //myShiroRealm.setCredentialsMatcher(hashedCredentialsMatcher()); //设置解密规则
         return myShiroRealm;
     }
 
     //因为我们的密码是加过密的，所以，如果要Shiro验证用户身份的话，需要告诉它我们用的是md5加密的，并且是加密了两次。
     // 同时我们在自己的Realm中也通过SimpleAuthenticationInfo返回了加密时使用的盐。这样Shiro就能顺利的解密密码并验证用户名和密码是否正确了。
+/*
     @Bean
     public HashedCredentialsMatcher hashedCredentialsMatcher() {
         HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
@@ -126,6 +127,7 @@ public class ShiroConfiguration {
         hashedCredentialsMatcher.setHashIterations(2);//散列的次数，比如散列两次，相当于 md5(md5(""));
         return hashedCredentialsMatcher;
     }
+*/
 
     /**
      * 开启shiro aop注解支持. 使用代理方式;所以需要开启代码支持;

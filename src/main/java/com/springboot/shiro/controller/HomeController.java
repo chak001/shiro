@@ -10,9 +10,11 @@ import org.apache.shiro.subject.Subject;
 import org.hibernate.cache.spi.access.UnknownAccessTypeException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -33,15 +35,25 @@ public class HomeController {
 
 
 
-    @GetMapping("/toLogin")
+    @GetMapping({"/toLogin","/logout"})
     public String login(){
         return "login";
     }
 
 
+    @GetMapping("/hello")
+    public String hello(){
+        return "hello";
+    }
+
+
+    @GetMapping("/aix")
+    public String aix(){
+        return "aix";
+    }
 
     @PostMapping("/login")
-    public ResponseEntity login(HttpServletRequest request, String username,String password,boolean rememberMe,String kaptcha) {
+    public String login(HttpServletRequest request, String username, String password, boolean rememberMe, String kaptcha, Map map) {
         log.info("验证登录请求!");
 
         UsernamePasswordToken token = new UsernamePasswordToken(username, password);
@@ -50,14 +62,17 @@ public class HomeController {
 
         try {
             currentUser.login(token);
-            return ResponseEntity.ok("登录成功");
+
+           map.put("msg", "登录成功");
+            return "index";
         } catch(UnknownAccountException e){
             token.clear();
-            return ResponseEntity.ok("用户名不存在,登录失败");
-        }
-        catch (AuthenticationException e) {
+            map.put("msg", "用户名不存在,登录失败");
+            return "toLogin";
+        } catch (AuthenticationException e) {
             token.clear();
-            return ResponseEntity.ok("密码错误,登录失败");
+            map.put("msg", "密码错误,登录失败");
+            return "toLogin";
         }
     }
 
