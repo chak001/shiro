@@ -42,7 +42,7 @@ public class ShiroConfiguration {
         //必须设置SecurityManager
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         //如果不设置默认会自动寻找web工程根目录下的"/login.jsp"页面;
-        //shiroFilterFactoryBean.setLoginUrl("/login");
+       // shiroFilterFactoryBean.setLoginUrl("/toLogin");
         //登录成功后跳转的页面;
        shiroFilterFactoryBean.setSuccessUrl("/index");
         //这里设置403并不会起作用，参考http://www.jianshu.com/p/e03f5b54838c
@@ -78,7 +78,7 @@ public class ShiroConfiguration {
         //配置static 文件下的资源能被访问.这是个例子
    //   filterChainDefinitionMap.put("/kaptcha.jpg", "anon");
         filterChainDefinitionMap.put("/static/**", "anon");
-        filterChainDefinitionMap.put("/login", "anon");
+        filterChainDefinitionMap.put("/toLogin", "anon");
 
        // filterChainDefinitionMap.put("/logout", "logout");
         //filterChainDefinitionMap.put("/**", "authc");

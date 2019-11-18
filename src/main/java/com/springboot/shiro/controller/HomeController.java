@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.cache.spi.access.UnknownAccessTypeException;
@@ -32,7 +33,7 @@ public class HomeController {
 
 
 
-    @GetMapping("/login")
+    @GetMapping("/toLogin")
     public String login(){
         return "login";
     }
@@ -50,9 +51,13 @@ public class HomeController {
         try {
             currentUser.login(token);
             return ResponseEntity.ok("登录成功");
-        } catch (AuthenticationException e) {
+        } catch(UnknownAccountException e){
             token.clear();
-            return ResponseEntity.ok("登录失败");
+            return ResponseEntity.ok("用户名不存在,登录失败");
+        }
+        catch (AuthenticationException e) {
+            token.clear();
+            return ResponseEntity.ok("密码错误,登录失败");
         }
     }
 
