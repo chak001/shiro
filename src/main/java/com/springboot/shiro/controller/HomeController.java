@@ -56,7 +56,7 @@ public class HomeController {
     public String login(HttpServletRequest request, String username, String password, boolean rememberMe, String kaptcha, Map map) {
         log.info("验证登录请求!");
 
-        UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+        UsernamePasswordToken token = new UsernamePasswordToken(username, password,rememberMe);
         //获取当前的Subject
         Subject currentUser = SecurityUtils.getSubject();
 
